@@ -128,7 +128,28 @@ The server was saved in .mcp.json but wasn't live in the session yet, so I had t
 
 ### Prompt
 
-> _To be added._
+> Problem 5: Build the agent team and grow the MCP tools
+>
+> Build the agent team for Campus Customs using PydanticAI: Boss, Inventory, Accounting, Facilities, and Customer Service. Any agent can delegate work to any other agent (full connectivity), so give each agent a way to ask the others for help.
+>
+> Roles:
+> - Boss: reads each ticket, decides who should work on it, and makes the final call
+> - Inventory: checks stock by SKU and size, spots shortfalls, and finds which vendor can restock
+> - Accounting: watches cash and invoices, checks margins, and prepares payments or purchase orders for human approval
+> - Facilities: handles the shop space side, like leases and rent
+> - Customer Service: drafts messages for customers (drafts only, never sent)
+>
+> Put one prompt file per agent in backend/prompts/: boss.md, inventory.md, accounting.md, facilities.md, customer_service.md. Make each prompt detailed: the agent's job, its scope, when to delegate, and the shop rules it needs (desk.date_today is "today" for overdue checks, vendor lead times come from vendors, a vendor won't ship while it has an open unpaid invoice, every payment needs human approval, never go below zero cash, no real emails or vendor calls).
+>
+> Put data types in backend/models.py and the agent code under backend/. Use my PORTKEY_API_KEY and only gpt-6-luna for every agent.
+>
+> The agents must get all shop data through my MCP server, not a separate database layer. Add the MCP tools they need for the tickets, like: get the desk date, get a ticket, get the cash balance, prepare a payment or purchase order (saved as waiting for approval, no cash moves yet), save a customer message draft, and mark a ticket resolved. The pay step must refuse if there isn't enough cash.
+>
+> Make the agents append to output/audit_trail.json for every agent step (time, agent, tool, short args and result, stop reason). Never wipe the file.
+>
+> In output/harness.md, list each agent and each MCP tool with the table it uses, and add a short safety section: guardrails for real customers and real money, plus limits to keep token use down (like max steps per agent and max delegation depth). Update mcp_server/README.md so the tool list matches.
+>
+> Test it quickly on one ticket to make sure the agents talk to each other, then reset data/campus_customs_new.db back to the original. Commit and push.
 
 ### Follow-up prompt
 
