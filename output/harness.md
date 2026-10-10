@@ -61,3 +61,23 @@ Why it matters: Bills owed to vendors. Agents use them to see what is due or ove
 | 103 | price_override | inventory, pricing (`CC-HOOD-NAVY`, M) | They want 20 but only **8** are in stock. Cost is $22 and list price is $58. |
 
 Ticket 101 is waiting on a reprint that hasn't been paid for. Paying both the rent ($2,400) and invoice 501 ($840) would use $3,240 of the $3,400 in checking.
+
+## MCP tools
+
+Server: `mcp_server/server.py` (FastMCP, name `campus-customs`). Every tool reads `data/campus_customs_new.db` read-only and returns only stored values. If a record doesn't exist, the tool returns `found: false` with an error message instead of guessing.
+
+| Tool | Inputs | Reads | Helps ticket |
+|---|---|---|---|
+| `check_stock` | `sku`, `size` | inventory, pricing | 101, 103 |
+| `get_vendor_invoices` | `vendor_id` | vendors, invoices | 101 |
+| `get_lease` | `lease_id` | leases | 102 |
+
+### check_stock
+- **Ticket 101:** It shows in one call that `CC-TEE-WHITE` size S has 0 in stock, so the agent knows the order can't be filled from the shelf.
+- **Ticket 103:** It shows only 8 of the 20 `CC-HOOD-NAVY` size M hoodies are in stock, along with the $22 cost and $58 list price, so the agent can size the order and check any bulk discount against cost.
+
+### get_vendor_invoices
+- **Ticket 101:** It returns Bulldog Print Co's 5-day lead time and its open $840 invoice 501 (due 2026-08-28) for the size S reprint. This lets the agent see that the reprint bill is overdue and must be dealt with before a restock date can be promised.
+
+### get_lease
+- **Ticket 102:** It returns the landlord (Elm City Properties), the $2,400 rent, and the 2026-09-02 due date straight from lease 1, so the agent can check the rent notice against the actual lease terms.

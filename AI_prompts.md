@@ -70,15 +70,29 @@ _Nothing; the first prompt was sufficient._
 
 ### Prompt
 
-> _To be added._
+> Problem 3: Write the MCP server
+>
+> Write an MCP server in 'mcp_server/server.py' using FastMCP. It should use 'data/campus_customs_new.db'. No need to connect or run it yet.
+>
+> For now, write three tools I know the tickets need:
+>
+> 1. check_stock: takes a sku and size, returns how many are in stock plus the cost and list price (inventory + pricing). Helps ticket 101 (white tee, size S) and 103 (navy hoodie, size M).
+>
+> 2. get_vendor_invoices: takes a vendor id, returns the vendor's details, lead time, and any open unpaid invoices (vendors + invoices). Helps ticket 101, because Bulldog Print Co won't ship while invoice 501 is unpaid.
+>
+> 3. get_lease: takes a lease id, returns the landlord, rent amount, and due date (leases). Helps ticket 102, the rent notice.
+>
+> Keep the names clear and never make up data, only use what's in the database.
+>
+> In output/harness.md, list each tool with: which table it reads, which ticket it helps (101, 102, or 103), and one sentence on why it's the right tool for that ticket.
 
 ### Follow-up prompt
 
-> _To be added (if needed)._
+> _None._
 
 ### What was lacking after the first prompt
 
-_To be added (one sentence)._
+_Nothing; the first prompt was sufficient._
 
 ## Problem 4: Add the MCP server to vibe coder and test each tool
 
