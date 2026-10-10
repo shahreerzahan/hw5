@@ -163,7 +163,28 @@ The new MCP tools were written to server.py, but the vibe coder's MCP connection
 
 ### Prompt
 
-> _To be added._
+> Problem 6: planning the three tickets
+>
+> Build 'output/desk_tickets.html', a page I can double-click, with one tab per ticket (101, 102, 103), plus empty Cash and Reflection tabs that say "coming later".
+>
+> On each ticket tab, add an Expected section with my plan below, and leave an empty Actual section for after I run the agents. Don't run the agents yet.
+>
+> Ticket 101 (customer order, white tee size S, 0 in stock):
+> Boss calls Inventory first, because the problem is that we have no stock. Inventory finds Bulldog Print Co can restock (5 lead days) but sees they won't ship because invoice 501 ($840) is still unpaid, so Inventory asks Accounting for help. Accounting checks cash and prepares the $840 payment for human approval, then prepares a purchase order for the tees. Boss then asks Customer Service to draft a message to the customer with the expected delivery time. Facilities is not needed.
+>
+> Tools: get ticket, check_stock, get_vendor_invoices, get cash balance, prepare payment, prepare purchase order, save customer draft, mark resolved.
+>
+> Ticket 102 (rent notice, $2,400 to Elm City Properties, due 09-02):
+> Boss calls Facilities first, because rent is a lease issue. Facilities checks the lease and compares the due date to desk.date_today to see if it's overdue, then asks Accounting to pay. Accounting checks that checking ($3,400) covers it and prepares the $2,400 payment for human approval. Inventory and Customer Service are not needed, since the landlord isn't a customer.
+>
+> Tools: get ticket, get desk date, get_lease, get cash balance, prepare payment, mark resolved.
+>
+> Ticket 103 (price override, 20 navy hoodies size M, only 8 in stock):
+> Boss calls Inventory first, because we can't promise a price before knowing we can fill the order. Inventory finds we're 12 short and checks which vendor can restock. Inventory or Boss asks Accounting to check the margin on the requested discount against the $22 cost, and whether we have cash for 12 more (about $264), which may be tight after rent and the invoice. Boss makes the final call, then Customer Service drafts a reply to the customer (approve, counteroffer, or partial order of 8 now). Facilities is not needed.
+>
+> Tools: get ticket, check_stock, get_vendor_invoices, get cash balance, maybe prepare purchase order, save customer draft, mark resolved.
+>
+> Commit and push.
 
 ### Follow-up prompt
 

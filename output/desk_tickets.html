@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Campus Customs: Desk Tickets</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #fff; --ink: #1d2433; --muted: #5b6475; --line: #dfe3ea;
+    --blue: #00356b; --blue-soft: #e8eef7; --green-soft: #e9f6ee; --green: #1e7a46;
+    --amber-soft: #fff6e0; --amber: #8a5a00; --gray-soft: #f0f1f4;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.55 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--ink); }
+  header { background: var(--blue); color: #fff; padding: 20px 32px; }
+  header h1 { margin: 0; font-size: 22px; }
+  header p { margin: 4px 0 0; opacity: .85; font-size: 14px; }
+  nav { display: flex; gap: 4px; padding: 0 32px; background: var(--card); border-bottom: 1px solid var(--line); position: sticky; top: 0; }
+  nav button { border: 0; background: none; padding: 14px 18px; font: inherit; font-weight: 600; color: var(--muted); cursor: pointer; border-bottom: 3px solid transparent; }
+  nav button:hover { color: var(--ink); }
+  nav button[aria-selected="true"] { color: var(--blue); border-bottom-color: var(--blue); }
+  main { max-width: 980px; margin: 0 auto; padding: 28px 32px 60px; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .summary { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px 20px; margin-bottom: 22px; }
+  .summary h2 { margin: 0 0 8px; font-size: 19px; }
+  .facts { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .facts li { background: var(--gray-soft); border-radius: 999px; padding: 3px 12px; font-size: 13px; }
+  section.block { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 18px 22px; margin-bottom: 22px; }
+  section.block > h3 { margin: 0 0 12px; font-size: 17px; display: flex; align-items: center; gap: 10px; }
+  .tag { font-size: 11px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; padding: 2px 8px; border-radius: 4px; }
+  .tag.expected { background: var(--blue-soft); color: var(--blue); }
+  .tag.actual { background: var(--amber-soft); color: var(--amber); }
+  h4 { margin: 18px 0 6px; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: .03em; }
+  .first-call { background: var(--blue-soft); border-left: 4px solid var(--blue); padding: 10px 14px; border-radius: 6px; }
+  ol.flow { margin: 0; padding-left: 0; list-style: none; counter-reset: step; }
+  ol.flow li { counter-increment: step; position: relative; padding: 8px 0 8px 40px; border-bottom: 1px dashed var(--line); }
+  ol.flow li:last-child { border-bottom: 0; }
+  ol.flow li::before { content: counter(step); position: absolute; left: 0; top: 8px; width: 26px; height: 26px; border-radius: 50%; background: var(--blue); color: #fff; font-size: 13px; font-weight: 700; display: grid; place-items: center; }
+  .hand { font-weight: 700; white-space: nowrap; }
+  .tools { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tools code { background: var(--green-soft); color: var(--green); padding: 3px 9px; border-radius: 5px; font-size: 13px; }
+  .tools code.maybe { background: var(--gray-soft); color: var(--muted); border: 1px dashed #b9bfca; }
+  .not-needed { color: var(--muted); }
+  .empty { border: 2px dashed var(--line); border-radius: 8px; padding: 14px 16px; color: var(--muted); min-height: 46px; }
+  .coming { text-align: center; padding: 70px 20px; color: var(--muted); background: var(--card); border: 2px dashed var(--line); border-radius: 10px; font-size: 17px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Campus Customs: Desk Tickets</h1>
+  <p>Shop date (desk.date_today): 2026-08-31 · Three open tickets · Plan written before running the agents</p>
+</header>
+
+<nav role="tablist">
+  <button role="tab" data-tab="t101" aria-selected="true">Ticket 101</button>
+  <button role="tab" data-tab="t102" aria-selected="false">Ticket 102</button>
+  <button role="tab" data-tab="t103" aria-selected="false">Ticket 103</button>
+  <button role="tab" data-tab="cash" aria-selected="false">Cash</button>
+  <button role="tab" data-tab="reflection" aria-selected="false">Reflection</button>
+</nav>
+
+<main>
+
+<!-- ============================== TICKET 101 ============================== -->
+<div class="panel active" id="t101" role="tabpanel">
+  <div class="summary">
+    <h2>Ticket 101: Customer order, Bulldog tee</h2>
+    <ul class="facts">
+      <li>Requester: Tauhid Zaman</li>
+      <li>CC-TEE-WHITE, size S, qty 1</li>
+      <li>In stock: 0</li>
+      <li>Linked invoice 501: $840, due 2026-08-28, open</li>
+      <li>Vendor: Bulldog Print Co (5 lead days)</li>
+    </ul>
+  </div>
+
+  <section class="block">
+    <h3><span class="tag expected">Expected</span> My plan</h3>
+
+    <h4>Boss calls first</h4>
+    <div class="first-call"><strong>Inventory</strong>, because the problem is that we have no stock.</div>
+
+    <h4>Delegations</h4>
+    <ol class="flow">
+      <li><span class="hand">Boss → Inventory</span>: Inventory finds that Bulldog Print Co can restock (5 lead days), but sees they won't ship because invoice 501 ($840) is still unpaid.</li>
+      <li><span class="hand">Inventory → Accounting</span>: Inventory asks Accounting for help. Accounting checks cash and prepares the $840 payment for human approval, then prepares a purchase order for the tees.</li>
+      <li><span class="hand">Boss → Customer Service</span>: Customer Service drafts a message to the customer with the expected delivery time.</li>
+    </ol>
+    <p class="not-needed"><strong>Not needed:</strong> Facilities.</p>
+
+    <h4>MCP tools expected</h4>
+    <div class="tools">
+      <code>get_ticket</code><code>check_stock</code><code>get_vendor_invoices</code><code>get_cash_balance</code><code>prepare_payment</code><code>prepare_purchase_order</code><code>save_customer_draft</code><code>resolve_ticket</code>
+    </div>
+  </section>
+
+  <section class="block">
+    <h3><span class="tag actual">Actual</span> After running the agents</h3>
+    <h4>Boss called first</h4><div class="empty"></div>
+    <h4>Delegations</h4><div class="empty"></div>
+    <h4>MCP tools used</h4><div class="empty"></div>
+    <h4>Outcome</h4><div class="empty"></div>
+  </section>
+</div>
+
+<!-- ============================== TICKET 102 ============================== -->
+<div class="panel" id="t102" role="tabpanel">
+  <div class="summary">
+    <h2>Ticket 102: Rent notice</h2>
+    <ul class="facts">
+      <li>Requester: Elm City Properties</li>
+      <li>Lease 1: Chapel Street shop</li>
+      <li>Rent: $2,400</li>
+      <li>Due: 2026-09-02</li>
+      <li>Checking: $3,400</li>
+    </ul>
+  </div>
+
+  <section class="block">
+    <h3><span class="tag expected">Expected</span> My plan</h3>
+
+    <h4>Boss calls first</h4>
+    <div class="first-call"><strong>Facilities</strong>, because rent is a lease issue.</div>
+
+    <h4>Delegations</h4>
+    <ol class="flow">
+      <li><span class="hand">Boss → Facilities</span>: Facilities checks the lease and compares the due date to desk.date_today to see if it's overdue.</li>
+      <li><span class="hand">Facilities → Accounting</span>: Facilities asks Accounting to pay. Accounting checks that checking ($3,400) covers it and prepares the $2,400 payment for human approval.</li>
+    </ol>
+    <p class="not-needed"><strong>Not needed:</strong> Inventory and Customer Service, since the landlord isn't a customer.</p>
+
+    <h4>MCP tools expected</h4>
+    <div class="tools">
+      <code>get_ticket</code><code>get_desk_date</code><code>get_lease</code><code>get_cash_balance</code><code>prepare_payment</code><code>resolve_ticket</code>
+    </div>
+  </section>
+
+  <section class="block">
+    <h3><span class="tag actual">Actual</span> After running the agents</h3>
+    <h4>Boss called first</h4><div class="empty"></div>
+    <h4>Delegations</h4><div class="empty"></div>
+    <h4>MCP tools used</h4><div class="empty"></div>
+    <h4>Outcome</h4><div class="empty"></div>
+  </section>
+</div>
+
+<!-- ============================== TICKET 103 ============================== -->
+<div class="panel" id="t103" role="tabpanel">
+  <div class="summary">
+    <h2>Ticket 103: Price override, bulk hoodie discount</h2>
+    <ul class="facts">
+      <li>Requester: Yale AI Club</li>
+      <li>CC-HOOD-NAVY, size M, qty 20</li>
+      <li>In stock: 8 (12 short)</li>
+      <li>Unit cost $22 · List $58</li>
+    </ul>
+  </div>
+
+  <section class="block">
+    <h3><span class="tag expected">Expected</span> My plan</h3>
+
+    <h4>Boss calls first</h4>
+    <div class="first-call"><strong>Inventory</strong>, because we can't promise a price before knowing we can fill the order.</div>
+
+    <h4>Delegations</h4>
+    <ol class="flow">
+      <li><span class="hand">Boss → Inventory</span>: Inventory finds we're 12 short and checks which vendor can restock.</li>
+      <li><span class="hand">Inventory (or Boss) → Accounting</span>: Accounting checks the margin on the requested discount against the $22 cost, and whether we have cash for 12 more (about $264), which may be tight after rent and the invoice.</li>
+      <li><span class="hand">Boss decides</span>: Boss makes the final call.</li>
+      <li><span class="hand">Boss → Customer Service</span>: Customer Service drafts a reply to the customer: approve, counteroffer, or a partial order of 8 now.</li>
+    </ol>
+    <p class="not-needed"><strong>Not needed:</strong> Facilities.</p>
+
+    <h4>MCP tools expected</h4>
+    <div class="tools">
+      <code>get_ticket</code><code>check_stock</code><code>get_vendor_invoices</code><code>get_cash_balance</code><code class="maybe" title="Only if the Boss approves restocking">prepare_purchase_order (maybe)</code><code>save_customer_draft</code><code>resolve_ticket</code>
+    </div>
+  </section>
+
+  <section class="block">
+    <h3><span class="tag actual">Actual</span> After running the agents</h3>
+    <h4>Boss called first</h4><div class="empty"></div>
+    <h4>Delegations</h4><div class="empty"></div>
+    <h4>MCP tools used</h4><div class="empty"></div>
+    <h4>Outcome</h4><div class="empty"></div>
+  </section>
+</div>
+
+<!-- ============================== CASH / REFLECTION ============================== -->
+<div class="panel" id="cash" role="tabpanel">
+  <div class="coming">Cash: coming later.</div>
+</div>
+
+<div class="panel" id="reflection" role="tabpanel">
+  <div class="coming">Reflection: coming later.</div>
+</div>
+
+</main>
+
+<script>
+  const tabs = document.querySelectorAll('nav button');
+  function show(id) {
+    tabs.forEach(b => b.setAttribute('aria-selected', b.dataset.tab === id));
+    document.querySelectorAll('.panel').forEach(p => p.classList.toggle('active', p.id === id));
+    history.replaceState(null, '', '#' + id);
+  }
+  tabs.forEach(b => b.addEventListener('click', () => show(b.dataset.tab)));
+  if (location.hash && document.getElementById(location.hash.slice(1))) show(location.hash.slice(1));
+</script>
+</body>
+</html>
