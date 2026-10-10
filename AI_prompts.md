@@ -106,11 +106,11 @@ The first prompt didn't ask for any documentation, so the server folder had no R
 
 ### Follow-up prompt
 
-> _To be added (if needed)._
+> is mcp server connected?
 
 ### What was lacking after the first prompt
 
-_To be added (one sentence)._
+The server was saved in .mcp.json but wasn't live in the session yet, so I had to reload the session and check that the AI could actually call its tools.
 
 ## Problem 5: Build the agent team and grow the MCP tools
 
