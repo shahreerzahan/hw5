@@ -227,7 +227,33 @@ _To be added (one sentence)._
 
 ### Prompt
 
-> _To be added._
+> Problem 8: Agent Dashboard
+>
+> Build the dashboard in frontend/ with React + Vite + TypeScript. It should call the routes from Problem 7 at http://localhost:8000, and the backend should allow http://localhost:5173 so the browser can call it.
+>
+> The board should:
+> - List all three tickets
+> - Let me pick one ticket and start the agent team on it
+> - Show each agent and what they are saying / doing while the ticket runs
+> - Mark a ticket resolved when the run finishes
+> - Show a short summary of what each agent did on that ticket
+> - Let a human approve a pay or purchase when asked
+> - Show the checking balance (it should drop after an approved pay)
+>
+> Design: keep the Campus Customs feel from my earlier homework (Yale blue and white), but make it minimalist with a Bauhaus and Scandinavian style:
+> - Off-white background, lots of white space, a clean grid layout, thin lines, flat colors, no heavy shadows or gradients
+> - A clean geometric sans-serif font, with big bold headings
+> - Yale blue as the main color, plus one small warm accent (like mustard yellow) used only for things that need attention, like the Approve button
+> - Each agent gets its own simple shape and color (for example Boss = blue circle, Inventory = square, Accounting = triangle, Facilities = half circle, Customer Service = rounded square), so you can tell who is talking at a glance
+> - The checking balance shown as one large, simple number
+> - Resolved tickets get a calm, clear "resolved" mark
+> - Small, smooth animations only (like new agent messages fading in)
+>
+> Start it with npm run dev and show me it working with the backend.
+>
+> Then write output/design.md: what I chose for the layout, how agents look different, how resolved tickets and cash show up, and why. Include the creative choices that make it feel special and enjoyable to use.
+>
+> Commit and push.
 
 ### Follow-up prompt
 

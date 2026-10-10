@@ -30,3 +30,12 @@ cd backend
 ```
 
 The API is at http://localhost:8000 (interactive docs at http://localhost:8000/docs).
+
+## Run the dashboard
+
+```bash
+cd frontend
+npm run dev
+```
+
+Open http://localhost:5173. Design notes are in `output/design.md`.

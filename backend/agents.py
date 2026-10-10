@@ -131,6 +131,12 @@ class Team:
                 budget=deps.budget,
             )
             prompt = f"Request from {deps.agent} about ticket {deps.ticket_id}:\n{request}"
+            # Logged now (not when the tool returns) so the trail reads in order: ask, work, answer.
+            audit.append({
+                "run_id": deps.run_id, "ticket_id": deps.ticket_id, "agent": deps.agent, "depth": deps.depth,
+                "step": "handoff", "tool": "ask_agent", "args": audit.short({"agent": agent, "request": request}),
+                "result": None, "stop_reason": "delegating",
+            })
             output = await team.run_agent(agent, prompt, sub_deps)
             if output is None:
                 return f"{agent} could not finish (limit reached or error); see the audit trail."
@@ -185,6 +191,7 @@ class Team:
                                           "stop_reason": "final_output"})
                         audit.append({**base, "step": "end", "tool": None, "args": None,
                                       "result": audit.short(output.model_dump()), "stop_reason": "completed",
+                                      "summary": output.decision if isinstance(output, TicketDecision) else output.summary,
                                       "usage": {"requests": run.usage.requests,
                                                 "input_tokens": run.usage.input_tokens,
                                                 "output_tokens": run.usage.output_tokens}})

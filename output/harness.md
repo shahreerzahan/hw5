@@ -76,7 +76,7 @@ Built with PydanticAI in `backend/agents.py`. Prompts are in `backend/prompts/`,
 
 Output types: specialists return an `AgentReport`, and the Boss returns a `TicketDecision`.
 
-Every agent-loop step is appended to `output/audit_trail.json`: time, run_id, ticket_id, agent, depth, step, tool, short args, short result, and stop reason (`tool_call`, `tool_error_retry`, `final_output`, `completed`, `usage_limit`, `error`, `guardrail`). The file is only ever appended to. If it isn't a valid JSON list, the code refuses to overwrite it.
+Every agent-loop step is appended to `output/audit_trail.json`: time, run_id, ticket_id, agent, depth, step, tool, short args, short result, and stop reason (`tool_call`, `tool_error_retry`, `final_output`, `completed`, `usage_limit`, `error`, `guardrail`, `delegating`). A `handoff` entry is written the moment one agent asks another, and the end entry carries the agent's full `summary`. The file is only ever appended to. If it isn't a valid JSON list, the code refuses to overwrite it.
 
 ## MCP tools
 
