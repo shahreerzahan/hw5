@@ -108,6 +108,18 @@ The first prompt didn't ask for any documentation, so the server folder had no R
 
 > is mcp server connected?
 
+> Now test each of my three MCP tools by actually calling them through the MCP server:
+>
+> 1. check_stock for CC-TEE-WHITE size S
+> 2. get_vendor_invoices for vendor 1
+> 3. get_lease for lease 1
+>
+> Save the evidence in output/mcp_smoke.json. For each tool include: the prompt I asked, the tool name, and the tool output.
+>
+> Double-check that the outputs match the values in data/campus_customs_new.db.
+>
+> Commit and push.
+
 ### What was lacking after the first prompt
 
 The server was saved in .mcp.json but wasn't live in the session yet, so I had to reload the session and check that the AI could actually call its tools.
