@@ -38,25 +38,33 @@ Log of the prompts I typed to the AI for each problem.
 
 ### Follow-up prompt
 
-> _None._
+> Always add prompts to AI_prompts.md whether I ask or not.
 
 ### What was lacking after the first prompt
 
-_Nothing; the first prompt was sufficient._
+The AI set up the log but didn't keep adding my new prompts to it unless I asked each time.
 
 ## Problem 2: Study the Campus Customs database
 
 ### Prompt
 
-> _To be added._
+> Problem 2: Study the Campus Customs Database.
+>
+> Open 'data/campus_customs.db' and look through every table and its fields. Copy the original file to 'data/campus_customs_new.db', since later problems will update that working copy.
+>
+> Study the three open tickets (101, 102, 103) and show me how they link to the other tables.
+>
+> Then 'start output/harness.md'. For each table, list the fields and one short line on why that table matters for the agents.
+>
+> Commit and push.
 
 ### Follow-up prompt
 
-> _To be added (if needed)._
+> _None._
 
 ### What was lacking after the first prompt
 
-_To be added (one sentence)._
+_Nothing; the first prompt was sufficient._
 
 ## Problem 3: Build the MCP server
 
