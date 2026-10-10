@@ -88,11 +88,13 @@ _Nothing; the first prompt was sufficient._
 
 ### Follow-up prompt
 
-> _None._
+> Also add a short mcp_server/README.md saying what the server is for, which database file it uses, and the three tools.
+>
+> Commit and push.
 
 ### What was lacking after the first prompt
 
-_Nothing; the first prompt was sufficient._
+The first prompt didn't ask for any documentation, so the server folder had no README explaining what the server does, which database it uses, or its tools.
 
 ## Problem 4: Add the MCP server to vibe coder and test each tool
 
