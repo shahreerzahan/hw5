@@ -153,11 +153,11 @@ The server was saved in .mcp.json but wasn't live in the session yet, so I had t
 
 ### Follow-up prompt
 
-> _To be added (if needed)._
+> Restart claude for the new tools.
 
 ### What was lacking after the first prompt
 
-_To be added (one sentence)._
+The new MCP tools were written to server.py, but the vibe coder's MCP connection was still running the old 3-tool server, so it had to be reconnected to see them.
 
 ## Problem 6: Plan the three tickets
 
