@@ -100,7 +100,9 @@ The first prompt didn't ask for any documentation, so the server folder had no R
 
 ### Prompt
 
-> _To be added._
+> Problem 4: Add the MCP Server to Vibe Coder
+>
+> Add my MCP server to this project so you can call its tools. Save the connection in .mcp.json at the project root. It should run mcp_server/server.py using the Python in my .venv. Commit and push.
 
 ### Follow-up prompt
 
