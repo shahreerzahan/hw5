@@ -198,7 +198,22 @@ _To be added (one sentence)._
 
 ### Prompt
 
-> _To be added._
+> Problem 7: Backend Routes
+>
+> My React dashboard (next problem) needs a backend it can call. In backend/main.py, use FastAPI and add routes that:
+>
+> - Return the three tickets and whether each is open or resolved
+> - Take a ticket id and run the agent team on that ticket
+> - Return recent agent events (what each agent said and which tools they used) so the board can refresh
+> - Approve a payment or purchase after a human clicks approve. The agents only prepare the pay; this route is what actually changes cash and updates the payments, invoices, and cash_accounts tables. It must refuse if there isn't enough cash.
+> - Return the current checking balance from 'cash_accounts'
+> - Reset data/campus_customs_new.db back to the original values for a fresh run
+>
+> Make sure it starts from the backend/ folder with: uvicorn main:app --reload --port 8000
+>
+> In output/harness.md, list each route in one line (URL and what it does).
+>
+> Quickly test the routes that don't run agents (tickets, balance, reset), then commit and push.
 
 ### Follow-up prompt
 

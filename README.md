@@ -21,3 +21,12 @@ pip install -r requirements.txt
 cp .env.example .env   # then add your Portkey API key
 cd frontend && npm install
 ```
+
+## Run the backend
+
+```bash
+cd backend
+../.venv/bin/uvicorn main:app --reload --port 8000
+```
+
+The API is at http://localhost:8000 (interactive docs at http://localhost:8000/docs).

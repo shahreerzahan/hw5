@@ -151,3 +151,19 @@ Which tickets the first three tools help:
 
 When a limit is hit, the agent stops and the trail records `usage_limit` or `guardrail`. The calling agent then finishes with what it has instead of retrying.
 
+
+## Backend routes
+
+`backend/main.py` (FastAPI). Start it from `backend/` with `uvicorn main:app --reload --port 8000`. Read routes go through the MCP server. Approve, reject and reset are human-only and aren't MCP tools, so agents can't call them.
+
+- `GET /api/tickets`: all tickets with their status (open or resolved) and the latest agent run state.
+- `GET /api/tickets/{id}`: one ticket with every field and its run state.
+- `POST /api/tickets/{id}/run`: starts the agent team on that ticket in the background (one run at a time; refuses resolved tickets).
+- `GET /api/tickets/{id}/run`: state of that ticket's latest run (running, done or failed) and the Boss's final decision.
+- `GET /api/events?limit=&after=&ticket_id=`: recent agent events from `output/audit_trail.json` (agent, tool, args, result or what it said, stop reason). Pass `after=<index>` to get only new events.
+- `GET /api/approvals`: payments and purchase orders the agents prepared that are waiting for a human.
+- `POST /api/approvals/{id}/approve`: a human approves; this is the only place cash moves. Subtracts `cash_accounts`, adds a `payments` row, marks the invoice paid (or moves rent's `next_due` a month on), and refuses if there isn't enough cash.
+- `POST /api/approvals/{id}/reject`: a human rejects a prepared payment or purchase order; no cash moves.
+- `GET /api/cash`: current checking balance from `cash_accounts`, plus the total waiting for approval.
+- `POST /api/reset`: copies `data/campus_customs.db` over `data/campus_customs_new.db` for a fresh run (refuses while agents are running; keeps the audit trail).
+- `GET /api/health`: server check (model name, whether an agent run is in progress).
