@@ -71,6 +71,28 @@
   .cash-head div span { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 6px; }
   .check { background: var(--green-soft); border-radius: 8px; padding: 12px 16px; font-size: 14px; }
   .check code { background: #fff; padding: 1px 6px; border-radius: 4px; }
+  .grade { float: right; font-size: 28px; font-weight: 800; color: var(--blue); line-height: 1; }
+  .grade small { display: block; font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; text-align: right; }
+  .twocol { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 10px; }
+  .twocol > div { border: 1px solid var(--line); border-radius: 8px; padding: 12px 16px; }
+  .twocol h5 { margin: 0 0 6px; font-size: 13px; text-transform: uppercase; letter-spacing: .04em; }
+  .twocol .good h5 { color: var(--green); }
+  .twocol .bad h5 { color: #a12a1b; }
+  .twocol ul { margin: 0; padding-left: 18px; }
+  .twocol li { margin: 4px 0; }
+  .approvals-line { margin-top: 12px; font-size: 14px; background: var(--gray-soft); border-radius: 6px; padding: 8px 12px; }
+  table.ledger td.ok { color: var(--green); font-weight: 700; }
+  table.ledger td.no { color: var(--amber); font-weight: 700; }
+  .problems { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 8px; }
+  .problems > div { border: 1px solid var(--line); border-top: 4px solid var(--blue); border-radius: 8px; padding: 12px 14px; font-size: 14px; }
+  .problems.cannot > div { border-top-color: #b7791f; }
+  .problems h5 { margin: 0 0 6px; font-size: 15px; }
+  .problems p { margin: 6px 0 0; }
+  .fix { margin: 0; padding-left: 0; list-style: none; }
+  .fix li { border-bottom: 1px dashed var(--line); padding: 10px 0; }
+  .fix li:last-child { border-bottom: 0; }
+  .fix strong { color: var(--blue); }
+  @media (max-width: 820px) { .twocol, .problems { grid-template-columns: 1fr; } }
 </style>
 </head>
 <body>
@@ -329,7 +351,126 @@
 </div>
 
 <div class="panel" id="reflection" role="tabpanel">
-  <div class="coming">Reflection: coming later.</div>
+  <div class="summary">
+    <h2>Reflection</h2>
+    <p style="margin:6px 0 0">This is based on the three runs I did after resetting the database: <code>131aba06f7e2</code> (101), <code>a41472b4caf2</code> (102) and <code>d24273839db7</code> (103). The evidence is the Actual section on each ticket tab and the Cash tab. Checking went from $3,400 to $152, and every dollar of that was a human clicking Approve on the board.</p>
+  </div>
+
+  <!-- 1. Performance per ticket -->
+  <section class="block">
+    <h3>1. How the agents did on each ticket</h3>
+
+    <h4>Ticket 101: Bulldog tee for Tauhid Zaman <span class="grade">B<small>my grade</small></span></h4>
+    <p>The team got the diagnosis right. Inventory saw <strong>0</strong> CC-TEE-WHITE in size S, found Bulldog Print Co (5 lead days), and caught that invoice 501 ($840, due 2026-08-28) was still open, which is exactly the "vendor won't ship while unpaid" rule. Accounting worked out that the invoice was 3 days overdue against desk.date_today (2026-08-31), not against the real calendar, and queued the $840 instead of paying it. Customer Service gave Tauhid a <em>tentative</em> 2026-09-05 (today + 5 lead days) and said plainly it wasn't promised.</p>
+    <div class="twocol">
+      <div class="good"><h5>What went right</h5><ul>
+        <li>The out-of-stock problem and the blocking invoice were both found from real MCP data.</li>
+        <li>Money only went into <code>approval_queue</code>. Nothing was paid until I approved it.</li>
+        <li>The customer draft didn't mention our unpaid bill or our cash; it just said "being confirmed".</li>
+      </ul></div>
+      <div class="bad"><h5>What went wrong</h5><ul>
+        <li><strong>It probably ordered the same tee twice.</strong> Invoice 501's description is literally "Rush reprint CC-TEE-WHITE S", so paying it should already release the tee. Accounting still queued an extra purchase order for 1 × CC-TEE-WHITE S at $8 (request #2), and I approved it.</li>
+        <li><strong>The run was probably cached.</strong> It finished in about 8 seconds and matched my pre-reset 23:42 run word for word, so Portkey most likely returned saved answers. The database changes (requests #1 and #2, draft #1) are real and came from this run, but the "reasoning" wasn't new.</li>
+      </ul></div>
+    </div>
+    <p class="approvals-line"><strong>Human approvals:</strong> request #1, $840 for invoice 501 (Bulldog Print Co), and request #2, an $8 purchase order. Checking went $3,400 → $2,560 → $2,552.</p>
+
+    <h4>Ticket 102: Rent due to Elm City Properties <span class="grade">A<small>my grade</small></span></h4>
+    <p>This was the smoothest run, and the one that went closest to my plan. Only Facilities and Accounting worked on it. Facilities matched the notice to lease 1 (Chapel Street shop, <strong>$2,400</strong>, due <strong>2026-09-02</strong>) and checked it against desk.date_today: due in 2 days, not overdue. Accounting saw $2,552 available (after my ticket 101 approvals), queued the $2,400 as request #3, and noted that $152 would be left. Inventory and Customer Service correctly stayed out, because the landlord isn't a customer. The run took about 31 seconds.</p>
+    <div class="twocol">
+      <div class="good"><h5>What went right</h5><ul>
+        <li>The right two specialists, and exactly the six tools I planned, with nothing extra.</li>
+        <li>The overdue check used the shop date, not the real one.</li>
+        <li>Accounting said up front that the payment would leave only $152.</li>
+      </ul></div>
+      <div class="bad"><h5>What could be better</h5><ul>
+        <li>Duplicate work: Facilities and Accounting <em>both</em> read the ticket, the desk date, the lease and the cash balance. That's 12 MCP calls for a job that needs about 6.</li>
+        <li>Nobody warned that a $152 cushion would block the next ticket's restock, and it did, on 103.</li>
+      </ul></div>
+    </div>
+    <p class="approvals-line"><strong>Human approval:</strong> request #3, $2,400 rent for lease 1. Checking went $2,552 → <strong>$152</strong>, and the lease's next due date moved to 2026-10-02.</p>
+
+    <h4>Ticket 103: Bulk hoodie discount for the Yale AI Club <span class="grade">C+<small>my grade</small></span></h4>
+    <p>The safety side worked and the customer side didn't. Inventory found <strong>8</strong> CC-HOOD-NAVY in size M against 20 wanted (12 short), and saw that Bulldog Print Co now had no open invoices because 501 had been paid on ticket 101. Accounting tried a purchase order for 12 × $22 = <strong>$264</strong>, and <code>prepare_purchase_order</code> <strong>refused it</strong> because only $152 was available. That's the never-below-zero rule doing its job at the tool level, with no approval request created and no human needed. But then the reply to the club went wrong.</p>
+    <div class="twocol">
+      <div class="good"><h5>What went right</h5><ul>
+        <li>The cash guardrail held: $264 was more than $152, so it was refused and not queued.</li>
+        <li>Accounting worked out the margin correctly: $36.67 is the lowest price that keeps 40% on a $22 cost.</li>
+        <li>The Boss checked stock before talking price, as I planned.</li>
+      </ul></div>
+      <div class="bad"><h5>What went wrong</h5><ul>
+        <li><strong>The draft overpromised.</strong> Draft #2 tells the club the other 12 are "expected by September 5", but the restock was <em>refused</em>. Nothing is on order, so that date has nothing behind it.</li>
+        <li><strong>It gave away too much on price.</strong> It offered $36.67, the <em>lowest</em> acceptable price and 37% off the $58 list, as the opening offer. It should have started higher and kept $36.67 as the floor.</li>
+        <li>Accounting asked Inventory again (a two-level handoff), repeating a lookup Inventory had just done for the Boss.</li>
+      </ul></div>
+    </div>
+    <p class="approvals-line"><strong>Human approvals:</strong> none. The only money step, the $264 purchase order, was refused by the tool before it reached me. Checking stayed at <strong>$152</strong>.</p>
+  </section>
+
+  <!-- 2. Expected vs actual -->
+  <section class="block">
+    <h3>2. Expected vs actual</h3>
+    <table class="ledger">
+      <thead><tr><th>Ticket</th><th>What I compared</th><th>Expected (my plan)</th><th>Actual (the run)</th><th>Match?</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="5"><strong>101</strong></td><td>First call</td><td>Inventory</td><td>Inventory</td><td class="ok">Yes</td></tr>
+        <tr><td>Who paid the invoice</td><td>Inventory → Accounting</td><td>Boss → Accounting. Inventory reported the unpaid invoice but never asked Accounting itself.</td><td class="no">No</td></tr>
+        <tr><td>Purchase order</td><td>Accounting pays $840, then orders the tees</td><td>Did both: $840 (request #1) and 1 × tee for $8 (request #2). I didn't notice that invoice 501 <em>is</em> the tee reprint, so my own plan had the duplicate order built in.</td><td class="no">Yes, but both were wrong</td></tr>
+        <tr><td>Customer Service</td><td>Boss → Customer Service, with the expected delivery time</td><td>Boss → Customer Service, draft #1 with a tentative 2026-09-05</td><td class="ok">Yes</td></tr>
+        <tr><td>Tools</td><td>8 tools</td><td>All 8, plus <code>get_desk_date</code>, <code>list_vendors</code> and <code>get_invoice</code>. No Facilities.</td><td class="ok">Yes, plus extras</td></tr>
+        <tr><td rowspan="3"><strong>102</strong></td><td>First call</td><td>Facilities</td><td>Facilities</td><td class="ok">Yes</td></tr>
+        <tr><td>Handoff to pay</td><td>Facilities → Accounting</td><td>Boss → Accounting. Facilities only <em>recommended</em> it.</td><td class="no">No</td></tr>
+        <tr><td>Tools and agents</td><td>6 tools; Inventory and Customer Service not needed</td><td>Exactly those 6 tools, and the same two specialists</td><td class="ok">Yes</td></tr>
+        <tr><td rowspan="5"><strong>103</strong></td><td>First call</td><td>Inventory</td><td>Inventory (8 in stock, 12 short)</td><td class="ok">Yes</td></tr>
+        <tr><td>Margin and cash check</td><td>Inventory or Boss → Accounting; cash "may be tight after rent and the invoice"</td><td>Boss → Accounting. I was right: only $152 was left, so the $264 order was refused.</td><td class="ok">Yes</td></tr>
+        <tr><td>Unplanned handoff</td><td>None</td><td>Accounting → Inventory (two levels deep) to re-check the vendor</td><td class="no">No</td></tr>
+        <tr><td>Customer reply</td><td>Approve, counteroffer, or 8 now</td><td>Draft #2 offered 8 now or 20 later at $36.67, but promised the 12 "by September 5" with no order placed</td><td class="no">Partly</td></tr>
+        <tr><td>Tools</td><td>Including "maybe" <code>prepare_purchase_order</code></td><td>Called, and refused for lack of cash. Extras: <code>get_desk_date</code>, <code>list_vendors</code>.</td><td class="ok">Yes</td></tr>
+      </tbody>
+    </table>
+    <p style="margin-top:12px">The pattern: <strong>I got the first call and the agents involved right on all three tickets</strong>, and the Boss never called everyone. Facilities sat out 101 and 103, and Inventory and Customer Service sat out 102. Where I was wrong was the <em>shape</em> of the handoffs. I pictured specialists passing work along (Inventory → Accounting, Facilities → Accounting). In practice the Boss acted as a hub: specialists reported back to it and it made the next call. The one specialist-to-specialist handoff that did happen (Accounting → Inventory on 103) was repeat work. My plan also shared the 101 mistake, since I wrote "prepares a purchase order for the tees" without noticing that invoice 501 was already that order.</p>
+  </section>
+
+  <!-- 3. One agent -->
+  <section class="block">
+    <h3>3. What would have been simpler as one agent with tools</h3>
+    <p><strong>Ticket 102 (rent).</strong> The job is: read the ticket, read lease 1, compare 2026-09-02 to desk.date_today, check checking has $2,400, queue the payment and resolve. That's six tool calls in a straight line, with no judgement call and no customer. The team version used <strong>3 agent runs, 17 model requests and about 30,000 input tokens</strong> (from the end entries in audit_trail.json). Facilities and Accounting each re-read the ticket, the desk date, the lease and the cash balance, so it took <strong>12 MCP calls</strong> where about 6 would do.</p>
+    <p>One "rent agent" with <code>get_ticket</code>, <code>get_desk_date</code>, <code>get_lease</code>, <code>get_cash_balance</code>, <code>prepare_payment</code> and <code>resolve_ticket</code> would be faster, cheaper and easier to audit. There are no handoffs to lose context in, and the money guardrails live in the MCP tools anyway, not in the agent split. Human approval (request #3) would still be required.</p>
+    <p>101 and 103 are different. They cross stock, vendor bills, cash, pricing and a customer message, and on 103 the parts actually conflict: the restock needs $264 while only $152 is available, and the discount needs a margin check. Splitting that across specialists with narrow tool access is useful there. For example, Customer Service <em>can't</em> queue money, and only Accounting can.</p>
+  </section>
+
+  <!-- 4. Could solve -->
+  <section class="block">
+    <h3>4. Three new problems this team <em>could</em> solve with my tools</h3>
+    <div class="problems">
+      <div><h5>Another out-of-stock order</h5>A student orders a Crest Mug (CC-MUG-CREST, <strong>0</strong> in stock). This is the 101 path: <code>check_stock</code> → <code>list_vendors</code> finds Elm City Gifts ("mugs and small goods", 3 lead days) → <code>get_vendor_invoices</code> → Accounting runs <code>prepare_purchase_order</code> at the $3.50 unit cost → Customer Service drafts a tentative date of today + 3 days.<p class="muted">With only $152 in checking, a small mug order still fits under the cash guardrail.</p></div>
+      <div><h5>A new vendor invoice coming due</h5>Bulldog sends a new bill. Accounting uses <code>get_invoice</code>, compares the due date to desk.date_today, checks <code>get_cash_balance</code> (including pending items) and queues it with <code>prepare_payment</code>. If it's more than $152, the tool refuses and the Boss has to decide what waits, the same trade-off as the 103 refusal.</div>
+      <div><h5>A bulk discount request</h5>Say another club wants 10 CC-HAT-BLUE caps. There are 40 in stock, so no restock is needed. Accounting checks the margin on the $6 cost and $22 list price using <code>check_stock</code>, Customer Service drafts the counteroffer, and the Boss resolves it. Exactly the 103 tools, without the cash problem.</div>
+    </div>
+  </section>
+
+  <!-- 5. Could not solve -->
+  <section class="block">
+    <h3>5. Three new problems it could <em>not</em> solve, and what I'd need</h3>
+    <div class="problems cannot">
+      <div><h5>Tracking sales and incoming revenue</h5>We only model money going <em>out</em>. That's why checking only ever fell ($3,400 → $152), even though selling those 8 hoodies on 103 would have brought money in. There's no sales or orders table and no tool to record a sale.<p><strong>Need:</strong> a <code>sales</code> table, <code>record_sale</code> and <code>get_revenue</code> MCP tools, and a <strong>Revenue agent</strong> so the cash forecast includes money coming in.</p></div>
+      <div><h5>Actually sending emails or placing vendor orders</h5>Drafts #1 and #2 are still sitting in <code>message_drafts</code>, and the approved $8 tee order was never sent to Bulldog. "No real emails or vendor calls" is on purpose, so the team can't finish the loop.<p><strong>Need:</strong> <code>send_email</code> and <code>place_vendor_order</code> tools that only run on drafts and orders a human has approved, the same way the approve route gates cash today, with every send logged in the audit trail.</p></div>
+      <div><h5>Planning stock ahead of game days and graduation</h5>Ticket 103 was reactive: we found out we were 12 hoodies short when the club asked. Nothing looks ahead to Harvard–Yale or Commencement weekends, when demand spikes.<p><strong>Need:</strong> sales history, a campus events calendar, a <code>forecast_demand</code> tool, and a <strong>Planning agent</strong> that suggests purchase orders early, while there's still cash and Bulldog's 5-day lead time can be met.</p></div>
+    </div>
+  </section>
+
+  <!-- 6. Fixes -->
+  <section class="block">
+    <h3>6. How I'd fix what went wrong</h3>
+    <ul class="fix">
+      <li><strong>Avoid duplicate orders (101).</strong> Make <code>prepare_purchase_order</code> check open invoices for the same SKU and size and refuse, or at least warn, when one already covers it. Invoice 501's "Rush reprint CC-TEE-WHITE S" should have blocked the extra $8 order. Add a line to Accounting's prompt: "if an open invoice is already for this item, paying it <em>is</em> the restock".</li>
+      <li><strong>Don't promise dates that aren't backed (103).</strong> Customer Service should call <code>list_pending_approvals</code> (or a new restock-status tool) before giving a date. If the restock was refused or isn't approved, the draft should say "we'll confirm a date once the restock is ordered", not "expected by September 5".</li>
+      <li><strong>Give pricing a range instead of the floor (103).</strong> Accounting should return a range: open near list price, with a small bulk discount (for example around $50 a hoodie, about 14% off), and keep $36.67 as the walk-away floor. The floor goes to the Boss and never into a customer draft.</li>
+      <li><strong>Turn off caching for real runs (101).</strong> Send Portkey's no-cache/force-refresh option on real ticket runs, so every run actually reasons from the current database. Caching could stay on for demos and testing.</li>
+      <li><strong>Watch the cash cushion.</strong> After 102, only $152 was left. Accounting should flag when a payment would leave less than a set minimum (say $500), so I know before approving that it will block the next restock.</li>
+      <li><strong>Cut repeat lookups.</strong> Let the Boss pass the facts it already has (ticket, desk date) to specialists, and tell specialists not to re-read them. That would have saved about half the MCP calls on 102.</li>
+    </ul>
+  </section>
 </div>
 
 </main>

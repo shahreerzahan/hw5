@@ -295,7 +295,28 @@ _To be added (one sentence)._
 
 ### Prompt
 
-> _To be added._
+> Problem 10: Reflection
+>
+> Fill the Reflection tab in output/desk_tickets.html. Write it in my voice, detailed and thorough, and tie every answer to this app and the three tickets I ran, using the ticket tabs and Cash tab as evidence. No generic AI essay. Use only the runs after my reset.
+>
+> How the agents did on each ticket, and what I noticed:
+> - Ticket 101: the agents found the stock problem and the unpaid invoice correctly, but they may have ordered the same tee twice: invoice 501 was already a rush reprint of CC-TEE-WHITE size S, and Accounting still placed an extra $8 order for one tee. The run also finished in about 8 seconds and matched an earlier pre-reset run word for word, so Portkey likely returned cached answers, even though the database changes came from this run.
+>
+> - Ticket 102: [how the rent ticket went, e.g. smooth, Facilities and Accounting only, as I expected]
+>
+> - Ticket 103: the cash check worked, because the restock order was refused when there wasn't enough cash. But the customer draft overpromised, telling the club the other 12 hoodies were "expected by September 5" even though the restock was refused. The price also gave away too much: it offered $36.67, the lowest acceptable price (37% off list), instead of starting higher and negotiating down.
+>
+> Expected vs Actual: compare my Expected plan to the Actual section on each tab and point out where they matched and where they didn't, including the duplicate tee order on 101 and the overpromise on 103.
+>
+> What would be simpler as one agent with tools: ticket 102 (rent) only needed the lease, the cash balance, and a payment. One agent with those tools could do it with fewer handoffs and fewer tokens.
+>
+> Three new problems this team COULD solve with my tools: another out-of-stock customer order; a new vendor invoice coming due; a bulk discount request that needs a margin and stock check.
+>
+> Three new problems it could NOT solve, and what I'd need: tracking sales and incoming revenue (needs a sales tool and a revenue agent, since we only model cash going out); actually sending emails or placing vendor orders (needs email and vendor-order tools, still with human approval); planning stock ahead of game days and graduation (needs sales history, a forecasting tool, and a planning agent).
+>
+> Also add how I'd fix what went wrong: check open invoices before ordering to avoid duplicates, have Customer Service check the restock status before promising dates, give the pricing a negotiation range instead of offering the floor price, and turn off caching for real runs.
+>
+> Use the real numbers from the Cash tab. Commit and push.
 
 ### Follow-up prompt
 
