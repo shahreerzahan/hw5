@@ -320,11 +320,11 @@ _To be added (one sentence)._
 
 ### Follow-up prompt
 
-> _To be added (if needed)._
+> * Ticket 102 - Inventory saw three vendors (Bulldog Print Co 5 days, Elm City Gifts 3 days, QuickShip CT 1 day) but still chose Bulldog Print Co, the one blocked by the unpaid invoice. A faster, unblocked vendor might have avoided paying $840 just to restock one $8 tee. On the plus side, the Boss kept the restock date tentative instead of promising it, and the cash math is right ($3,400 − $840 − $8 = $2,552).
 
 ### What was lacking after the first prompt
 
-_To be added (one sentence)._
+The first reflection didn't question Inventory's vendor choice or credit the tentative restock date and correct cash math on the tee ticket (which I labeled 102 but is ticket 101).
 
 ## Problem 11: Submit to GitHub
 

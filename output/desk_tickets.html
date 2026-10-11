@@ -367,8 +367,11 @@
         <li>The out-of-stock problem and the blocking invoice were both found from real MCP data.</li>
         <li>Money only went into <code>approval_queue</code>. Nothing was paid until I approved it.</li>
         <li>The customer draft didn't mention our unpaid bill or our cash; it just said "being confirmed".</li>
+        <li>The Boss kept the restock date <em>tentative</em> (2026-09-05, "not a promised delivery date" in its resolution note) instead of promising it to Tauhid.</li>
+        <li>The cash math is right: $3,400 − $840 − $8 = <strong>$2,552</strong>, matching what Accounting saw at the start of ticket 102.</li>
       </ul></div>
       <div class="bad"><h5>What went wrong</h5><ul>
+        <li><strong>It didn't explain its vendor choice.</strong> <code>list_vendors</code> returned three vendors: Bulldog Print Co (5 days), Elm City Gifts (3 days) and QuickShip CT (1 day). Inventory still went with Bulldog Print Co, the one blocked by the unpaid invoice. A faster, unblocked vendor might have avoided paying $840 just to restock one $8 tee. The vendors table lists Elm City Gifts as "mugs and small goods" and QuickShip CT as a "local courier", so Bulldog may have been the only apparel option. But Inventory never said why it ruled the other two out, so I couldn't check that decision without going to the database myself.</li>
         <li><strong>It probably ordered the same tee twice.</strong> Invoice 501's description is literally "Rush reprint CC-TEE-WHITE S", so paying it should already release the tee. Accounting still queued an extra purchase order for 1 × CC-TEE-WHITE S at $8 (request #2), and I approved it.</li>
         <li><strong>The run was probably cached.</strong> It finished in about 8 seconds and matched my pre-reset 23:42 run word for word, so Portkey most likely returned saved answers. The database changes (requests #1 and #2, draft #1) are real and came from this run, but the "reasoning" wasn't new.</li>
       </ul></div>
@@ -464,6 +467,7 @@
     <h3>6. How I'd fix what went wrong</h3>
     <ul class="fix">
       <li><strong>Avoid duplicate orders (101).</strong> Make <code>prepare_purchase_order</code> check open invoices for the same SKU and size and refuse, or at least warn, when one already covers it. Invoice 501's "Rush reprint CC-TEE-WHITE S" should have blocked the extra $8 order. Add a line to Accounting's prompt: "if an open invoice is already for this item, paying it <em>is</em> the restock".</li>
+      <li><strong>Make vendor choices visible (101).</strong> Inventory's report should list every vendor it considered and why each was or wasn't usable (specialty, lead time, open invoices). Then I can see whether a faster, unblocked vendor could have restocked the tee without first clearing the $840 invoice.</li>
       <li><strong>Don't promise dates that aren't backed (103).</strong> Customer Service should call <code>list_pending_approvals</code> (or a new restock-status tool) before giving a date. If the restock was refused or isn't approved, the draft should say "we'll confirm a date once the restock is ordered", not "expected by September 5".</li>
       <li><strong>Give pricing a range instead of the floor (103).</strong> Accounting should return a range: open near list price, with a small bulk discount (for example around $50 a hoodie, about 14% off), and keep $36.67 as the walk-away floor. The floor goes to the Boss and never into a customer draft.</li>
       <li><strong>Turn off caching for real runs (101).</strong> Send Portkey's no-cache/force-refresh option on real ticket runs, so every run actually reasons from the current database. Caching could stay on for demos and testing.</li>
