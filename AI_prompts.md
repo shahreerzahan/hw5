@@ -267,7 +267,21 @@ _To be added (one sentence)._
 
 ### Prompt
 
-> _To be added._
+> Problem 9: Resolving the tickets
+>
+> I reset the database (starting checking balance $3,400) and ran all three tickets (101, 102, 103) on the board until each was resolved. My screenshots are in output/resolved_board_images/ as 101.png, 102.png, and 103.png.
+>
+> 1. In output/desk_tickets.html, fill the Actual section on each ticket tab from this run: which agents worked, what they delegated, and which tools they used. Use the agent events and audit_trail.json. Keep my Expected section so the two can be compared.
+>
+> 2. Fill the Cash tab: starting checking balance after the reset, then for each ticket how cash changed and why (which payment or purchase, dollar amount), and the ending balance. The ending balance must match cash_accounts in data/campus_customs_new.db, so please check it against the database and the payments table.
+>
+> 3. Save output/resolved_tickets.json with, for each ticket: id, final status, short outcome, what each agent contributed, and any human approvals.
+>
+> 4. Make output/resolved_board.html, a page I can double-click, showing my screenshot for each resolved ticket (101, 102, 103) using relative paths.
+>
+> 5. Make sure audit_trail.json has these real runs, and finish output/harness.md so it covers the tables, MCP tools, the five agents, API routes, the dashboard, and safety rules.
+>
+> Don't reset or rerun anything. Commit and push.
 
 ### Follow-up prompt
 

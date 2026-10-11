@@ -1,9 +1,12 @@
 # Campus Customs Agent Harness
 
-Reference for the agent team: what is in the database and why each table matters.
+Reference for the Campus Customs multi-agent system: the data, the MCP tools, the five agents, the API, the dashboard, and the safety rules around them.
 
 - **Original (read-only):** `data/campus_customs.db`
 - **Working copy (agents update this):** `data/campus_customs_new.db`
+- **Model:** gpt-6-luna through Portkey, for every agent
+
+**Contents:** Tables · The three tickets · MCP tools · Agents · Backend routes · Dashboard · Safety · Results · Files
 
 ## Tables
 
@@ -52,7 +55,17 @@ Fields: `id` (INTEGER, PK), `vendor_id` (INTEGER, FK → vendors.id), `amount` (
 
 Why it matters: Bills owed to vendors. Agents use them to see what is due or overdue and how much cash is already committed.
 
-## Open tickets and their links
+### approval_queue (added by the MCP server)
+Fields: `id` (INTEGER, PK), `kind` ('payment' or 'purchase_order'), `ticket_id`, `ref_type` ('invoice' or 'lease'), `ref_id`, `vendor_id`, `sku`, `size`, `qty`, `amount` (REAL), `account`, `reason`, `requested_by`, `status` ('waiting_for_approval', 'approved' or 'rejected'), `created_at`
+
+Why it matters: Where agents put money they *want* to spend. Nothing here moves cash; a human approves or rejects each row on the dashboard, and pending rows count against the cash available for new requests.
+
+### message_drafts (added by the MCP server)
+Fields: `id` (INTEGER, PK), `ticket_id`, `recipient`, `subject`, `body`, `drafted_by`, `status` (always 'draft'), `created_at`
+
+Why it matters: Customer Service's only output channel. Replies wait here for a human, so no agent ever contacts a real customer.
+
+## The three tickets and their links
 
 | Ticket | Type | Links to | What the linked data shows |
 |---|---|---|---|
@@ -62,29 +75,13 @@ Why it matters: Bills owed to vendors. Agents use them to see what is due or ove
 
 Ticket 101 is waiting on a reprint that hasn't been paid for. Paying both the rent ($2,400) and invoice 501 ($840) would use $3,240 of the $3,400 in checking.
 
-## Agents
-
-Built with PydanticAI in `backend/agents.py`. Prompts are in `backend/prompts/`, and data types are in `backend/models.py`. Every agent runs on **gpt-6-luna** through Portkey. All five agents share one MCP connection, and each one only sees the MCP tools its role needs. Every agent also has `ask_agent(agent, request)`, so any agent can ask any other for help (full connectivity).
-
-| Agent | Prompt | Job | MCP tools | Tables it touches |
-|---|---|---|---|---|
-| Boss | `boss.md` | Reads the ticket, decides who works on it, checks the reports, makes the final call, resolves the ticket | get_desk_date, list_tickets, get_ticket, list_pending_approvals, resolve_ticket | desk, tickets, approval_queue |
-| Inventory | `inventory.md` | Stock by SKU and size, shortfalls, which vendor can restock and how fast | get_desk_date, get_ticket, check_stock, list_vendors, get_vendor_invoices | desk, tickets, inventory, pricing, vendors, invoices |
-| Accounting | `accounting.md` | Cash, invoices, margins. Queues payments and purchase orders for human approval | get_desk_date, get_ticket, get_cash_balance, list_pending_approvals, get_invoice, get_vendor_invoices, get_lease, check_stock, prepare_payment, prepare_purchase_order | desk, tickets, cash_accounts, invoices, vendors, leases, inventory, pricing, approval_queue |
-| Facilities | `facilities.md` | Shop space: lease, landlord, rent amount and due date | get_desk_date, get_ticket, get_lease, get_cash_balance, list_pending_approvals | desk, tickets, leases, cash_accounts, approval_queue |
-| Customer Service | `customer_service.md` | Drafts messages to customers (drafts only, never sent) | get_desk_date, get_ticket, check_stock, save_customer_draft | desk, tickets, inventory, pricing, message_drafts |
-
-Output types: specialists return an `AgentReport`, and the Boss returns a `TicketDecision`.
-
-Every agent-loop step is appended to `output/audit_trail.json`: time, run_id, ticket_id, agent, depth, step, tool, short args, short result, and stop reason (`tool_call`, `tool_error_retry`, `final_output`, `completed`, `usage_limit`, `error`, `guardrail`, `delegating`). A `handoff` entry is written the moment one agent asks another, and the end entry carries the agent's full `summary`. The file is only ever appended to. If it isn't a valid JSON list, the code refuses to overwrite it.
+All three were resolved by the team in Problem 9 (see Results).
 
 ## MCP tools
 
 Server: `mcp_server/server.py` (FastMCP, name `campus-customs`). Every tool works on `data/campus_customs_new.db` and returns only stored values. If a record doesn't exist, the tool returns `found: false` (or `ok: false`) with an error message instead of guessing. The agents get all shop data through these tools; there is no other database layer.
 
-The server adds two tables to the working copy on startup (they are not in the original database):
-- **approval_queue**: payments and purchase orders `waiting_for_approval` (fields: id, kind, ticket_id, ref_type, ref_id, vendor_id, sku, size, qty, amount, account, reason, requested_by, status, created_at)
-- **message_drafts**: customer message drafts, never sent (fields: id, ticket_id, recipient, subject, body, drafted_by, status, created_at)
+The server also creates the `approval_queue` and `message_drafts` tables (see Tables).
 
 ### All tools
 
@@ -123,6 +120,50 @@ Which tickets the first three tools help:
 ### get_lease
 - **Ticket 102:** It returns the landlord (Elm City Properties), the $2,400 rent, and the 2026-09-02 due date straight from lease 1, so the agent can check the rent notice against the actual lease terms.
 
+## Agents
+
+Built with PydanticAI in `backend/agents.py`. Prompts are in `backend/prompts/`, and data types are in `backend/models.py`. Every agent runs on **gpt-6-luna** through Portkey. All five agents share one MCP connection, and each one only sees the MCP tools its role needs. Every agent also has `ask_agent(agent, request)`, so any agent can ask any other for help (full connectivity).
+
+| Agent | Prompt | Job | MCP tools | Tables it touches |
+|---|---|---|---|---|
+| Boss | `boss.md` | Reads the ticket, decides who works on it, checks the reports, makes the final call, resolves the ticket | get_desk_date, list_tickets, get_ticket, list_pending_approvals, resolve_ticket | desk, tickets, approval_queue |
+| Inventory | `inventory.md` | Stock by SKU and size, shortfalls, which vendor can restock and how fast | get_desk_date, get_ticket, check_stock, list_vendors, get_vendor_invoices | desk, tickets, inventory, pricing, vendors, invoices |
+| Accounting | `accounting.md` | Cash, invoices, margins. Queues payments and purchase orders for human approval | get_desk_date, get_ticket, get_cash_balance, list_pending_approvals, get_invoice, get_vendor_invoices, get_lease, check_stock, prepare_payment, prepare_purchase_order | desk, tickets, cash_accounts, invoices, vendors, leases, inventory, pricing, approval_queue |
+| Facilities | `facilities.md` | Shop space: lease, landlord, rent amount and due date | get_desk_date, get_ticket, get_lease, get_cash_balance, list_pending_approvals | desk, tickets, leases, cash_accounts, approval_queue |
+| Customer Service | `customer_service.md` | Drafts messages to customers (drafts only, never sent) | get_desk_date, get_ticket, check_stock, save_customer_draft | desk, tickets, inventory, pricing, message_drafts |
+
+Output types: specialists return an `AgentReport`, and the Boss returns a `TicketDecision`.
+
+Every agent-loop step is appended to `output/audit_trail.json`: time, run_id, ticket_id, agent, depth, step, tool, short args, short result, and stop reason (`tool_call`, `tool_error_retry`, `final_output`, `completed`, `usage_limit`, `error`, `guardrail`, `delegating`). A `handoff` entry is written the moment one agent asks another, and the end entry carries the agent's full `summary`. The file is only ever appended to. If it isn't a valid JSON list, the code refuses to overwrite it.
+
+## Backend routes
+
+`backend/main.py` (FastAPI). Start it from `backend/` with `uvicorn main:app --reload --port 8000`. Read routes go through the MCP server. Approve, reject and reset are human-only and aren't MCP tools, so agents can't call them.
+
+- `GET /api/tickets`: all tickets with their status (open or resolved) and the latest agent run state.
+- `GET /api/tickets/{id}`: one ticket with every field and its run state.
+- `POST /api/tickets/{id}/run`: starts the agent team on that ticket in the background (one run at a time; refuses resolved tickets).
+- `GET /api/tickets/{id}/run`: state of that ticket's latest run (running, done or failed) and the Boss's final decision.
+- `GET /api/events?limit=&after=&ticket_id=`: recent agent events from `output/audit_trail.json` (agent, tool, args, result or what it said, stop reason). Pass `after=<index>` to get only new events.
+- `GET /api/approvals`: payments and purchase orders the agents prepared that are waiting for a human.
+- `POST /api/approvals/{id}/approve`: a human approves; this is the only place cash moves. Subtracts `cash_accounts`, adds a `payments` row, marks the invoice paid (or moves rent's `next_due` a month on), and refuses if there isn't enough cash.
+- `POST /api/approvals/{id}/reject`: a human rejects a prepared payment or purchase order; no cash moves.
+- `GET /api/cash`: current checking balance from `cash_accounts`, plus the total waiting for approval.
+- `POST /api/reset`: copies `data/campus_customs.db` over `data/campus_customs_new.db` for a fresh run (refuses while agents are running; keeps the audit trail).
+- `GET /api/health`: server check (model name, whether an agent run is in progress).
+
+## Dashboard
+
+`frontend/` (React + Vite + TypeScript), started with `npm run dev` on http://localhost:5173. It calls the routes above at http://localhost:8000, and the backend allows that origin through CORS. Design notes are in `output/design.md`.
+
+- **Tickets (left):** all three tickets with an open, working or resolved mark. Pick one to work on.
+- **Floor (center):** a **Run the team** button, the Boss's final call, and a live conversation built from `/api/events`. Each agent step is shown as plain English, with handoffs indented by delegation depth.
+- **Needs you (right):** payments and purchase orders waiting for approval, each with **Approve** (mustard, the only warm color) and **Reject** buttons.
+- **The team (right):** each agent's shape, its live status (working, done or not needed), its summary, who it asked, and the tools it used.
+- **Header:** the checking balance as one large number, which counts down after an approval.
+- **Agent shapes:** Boss ● blue circle · Inventory ■ light-blue square · Accounting ▲ black triangle · Facilities half circle in red · Customer Service rounded square in green.
+- **Refresh rate:** the page asks for new events every 1.2 seconds during a run and every 5 seconds otherwise.
+
 ## Safety
 
 ### Guardrails for real customers and real money
@@ -134,6 +175,8 @@ Which tickets the first three tools help:
 - **Least privilege.** Each agent sees only its own MCP tools. Only Accounting can queue money, only Customer Service can save drafts, and only the Boss can resolve a ticket.
 - **One source of truth.** All data comes through the MCP server over `campus_customs_new.db`. The original `campus_customs.db` is never written.
 - **Shop date.** Overdue and due-date checks use `desk.date_today`, not the real clock.
+- **Approval is a separate, human-only step.** The approve route isn't an MCP tool, so no agent can approve its own request. It runs in one database transaction, checks again that the request is still waiting, and refuses if the account can't cover it. It is the only code that writes `payments` or changes `cash_accounts`.
+- **One agent run at a time.** The backend lock stops two runs from both passing the same cash check, and reset is refused while agents are running.
 - **Audit everything.** Every step is in the append-only `output/audit_trail.json`, so a human can trace who did what and why.
 
 ### Limits that keep token use down (`backend/config.py`)
@@ -151,19 +194,29 @@ Which tickets the first three tools help:
 
 When a limit is hit, the agent stops and the trail records `usage_limit` or `guardrail`. The calling agent then finishes with what it has instead of retrying.
 
+## Results (Problem 9)
 
-## Backend routes
+All three tickets were resolved on the dashboard after a reset. Details are in `output/desk_tickets.html` (expected vs actual, Cash tab), `output/resolved_tickets.json` and `output/resolved_board.html`. The runs are in `output/audit_trail.json`.
 
-`backend/main.py` (FastAPI). Start it from `backend/` with `uvicorn main:app --reload --port 8000`. Read routes go through the MCP server. Approve, reject and reset are human-only and aren't MCP tools, so agents can't call them.
+| Ticket | Run | Agents used | Money | Final status |
+|---|---|---|---|---|
+| 101 Bulldog tee | `131aba06f7e2` | Boss → Inventory, Accounting, Customer Service | $840 invoice 501 + $8 purchase order, both approved | resolved |
+| 102 Rent due | `a41472b4caf2` | Boss → Facilities, Accounting | $2,400 rent approved | resolved |
+| 103 Bulk hoodies | `d24273839db7` | Boss → Inventory, Accounting (→ Inventory), Customer Service | $264 purchase order **refused** (only $152 available) | resolved |
 
-- `GET /api/tickets`: all tickets with their status (open or resolved) and the latest agent run state.
-- `GET /api/tickets/{id}`: one ticket with every field and its run state.
-- `POST /api/tickets/{id}/run`: starts the agent team on that ticket in the background (one run at a time; refuses resolved tickets).
-- `GET /api/tickets/{id}/run`: state of that ticket's latest run (running, done or failed) and the Boss's final decision.
-- `GET /api/events?limit=&after=&ticket_id=`: recent agent events from `output/audit_trail.json` (agent, tool, args, result or what it said, stop reason). Pass `after=<index>` to get only new events.
-- `GET /api/approvals`: payments and purchase orders the agents prepared that are waiting for a human.
-- `POST /api/approvals/{id}/approve`: a human approves; this is the only place cash moves. Subtracts `cash_accounts`, adds a `payments` row, marks the invoice paid (or moves rent's `next_due` a month on), and refuses if there isn't enough cash.
-- `POST /api/approvals/{id}/reject`: a human rejects a prepared payment or purchase order; no cash moves.
-- `GET /api/cash`: current checking balance from `cash_accounts`, plus the total waiting for approval.
-- `POST /api/reset`: copies `data/campus_customs.db` over `data/campus_customs_new.db` for a fresh run (refuses while agents are running; keeps the audit trail).
-- `GET /api/health`: server check (model name, whether an agent run is in progress).
+Checking went from $3,400 to **$152**, which matches `cash_accounts` and the three rows in `payments` ($3,248 total).
+
+## Files
+
+| Path | What it is |
+|---|---|
+| `mcp_server/server.py` | FastMCP server, the agents' only access to shop data |
+| `.mcp.json` | Connects the MCP server to the vibe coder |
+| `backend/agents.py`, `backend/models.py`, `backend/config.py`, `backend/audit.py` | The agent team, data types, limits and audit trail |
+| `backend/prompts/*.md` | One prompt per agent |
+| `backend/main.py` | FastAPI routes |
+| `frontend/` | React dashboard |
+| `output/audit_trail.json` | Append-only log of every agent step |
+| `output/mcp_smoke.json` | Problem 4 tool test evidence |
+| `output/desk_tickets.html`, `output/resolved_tickets.json`, `output/resolved_board.html` | Plan vs actual, cash, and resolved results |
+| `output/design.md` | Dashboard design notes |

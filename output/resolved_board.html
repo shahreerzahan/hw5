@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Campus Customs: Resolved Board</title>
+<style>
+  :root { --paper: #f6f4ef; --ink: #15181e; --muted: #6b6f78; --rule: #dcd8cf; --yale: #00356b; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.55 'Jost', 'Futura', 'Avenir Next', 'Century Gothic', system-ui, sans-serif; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 40px 64px; }
+  header { padding: 40px 0 24px; border-bottom: 2px solid var(--ink); display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; flex-wrap: wrap; }
+  h1 { margin: 0; font-size: 44px; line-height: 1; letter-spacing: -0.03em; color: var(--yale); }
+  header p { margin: 8px 0 0; color: var(--muted); }
+  nav { display: flex; gap: 8px; }
+  nav a { color: var(--yale); text-decoration: none; font-weight: 600; border: 1.5px solid var(--yale); padding: 6px 14px; border-radius: 999px; }
+  nav a:hover { background: var(--yale); color: #fff; }
+  section { padding: 40px 0; border-bottom: 1px solid var(--rule); }
+  .head { display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 6px; }
+  .no { font-size: 40px; font-weight: 700; color: var(--yale); letter-spacing: -0.03em; }
+  h2 { margin: 0; font-size: 28px; letter-spacing: -0.02em; }
+  .stamp { margin-left: auto; border: 1.5px solid var(--yale); color: var(--yale); border-radius: 999px; padding: 4px 14px; font-size: 13px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; }
+  .outcome { color: var(--muted); max-width: 900px; margin: 0 0 20px; }
+  figure { margin: 0; }
+  figure a { display: block; border: 1px solid var(--rule); background: #fff; }
+  img { display: block; width: 100%; height: auto; }
+  figcaption { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  footer { padding-top: 24px; color: var(--muted); font-size: 14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>Resolved board</h1>
+      <p>All three tickets resolved on the agent desk after a reset · checking went from $3,400 to $152</p>
+    </div>
+    <nav><a href="#t101">101</a><a href="#t102">102</a><a href="#t103">103</a></nav>
+  </header>
+
+  <section id="t101">
+    <div class="head"><span class="no">101</span><h2>Bulldog tee · Tauhid Zaman</h2><span class="stamp">Resolved</span></div>
+    <p class="outcome">Size S was out of stock and Bulldog Print Co was blocked by overdue invoice 501. Accounting queued the $840 invoice and an $8 one-tee restock (both approved by a human), and Customer Service saved draft #1 with a tentative restock date.</p>
+    <figure>
+      <a href="resolved_board_images/101.png" target="_blank"><img src="resolved_board_images/101.png" alt="Agent desk showing ticket 101 resolved"></a>
+      <figcaption>resolved_board_images/101.png · click to open full size</figcaption>
+    </figure>
+  </section>
+
+  <section id="t102">
+    <div class="head"><span class="no">102</span><h2>Rent due · Elm City Properties</h2><span class="stamp">Resolved</span></div>
+    <p class="outcome">Facilities matched the notice to lease 1 ($2,400, due 2026-09-02, 2 days away). Accounting queued the rent and a human approved it, leaving $152 in checking.</p>
+    <figure>
+      <a href="resolved_board_images/102.png" target="_blank"><img src="resolved_board_images/102.png" alt="Agent desk showing ticket 102 resolved"></a>
+      <figcaption>resolved_board_images/102.png · click to open full size</figcaption>
+    </figure>
+  </section>
+
+  <section id="t103">
+    <div class="head"><span class="no">103</span><h2>Bulk hoodie discount · Yale AI Club</h2><span class="stamp">Resolved</span></div>
+    <p class="outcome">8 of 20 hoodies were in stock. The $264 restock was refused by the cash guardrail ($152 available), so no money moved. Customer Service saved draft #2 offering 8 now or 20 after restock at a proposed $36.67 each, subject to confirmation.</p>
+    <figure>
+      <a href="resolved_board_images/103.png" target="_blank"><img src="resolved_board_images/103.png" alt="Agent desk showing ticket 103 resolved"></a>
+      <figcaption>resolved_board_images/103.png · click to open full size</figcaption>
+    </figure>
+  </section>
+
+  <footer>Details: <a href="desk_tickets.html">desk_tickets.html</a> (expected vs actual, cash) · <a href="resolved_tickets.json">resolved_tickets.json</a></footer>
+</div>
+</body>
+</html>

@@ -1,0 +1,101 @@
+{
+  "run_date": "2026-10-10",
+  "shop_date": "2026-08-31",
+  "source": "output/audit_trail.json (runs after reset) + data/campus_customs_new.db",
+  "cash": {
+    "start": 3400.0,
+    "paid_out": 3248.0,
+    "end": 152.0,
+    "matches_cash_accounts": true
+  },
+  "tickets": [
+    {
+      "id": 101,
+      "type": "customer_order",
+      "requester": "Tauhid Zaman",
+      "subject": "Bulldog tee",
+      "final_status": "resolved",
+      "run_id": "131aba06f7e2",
+      "outcome": "Size S tee was out of stock and its vendor was blocked by overdue invoice 501. Accounting queued the $840 invoice payment and an $8 one-tee restock, a human approved both, and the customer got a draft with a tentative (not promised) 2026-09-05 restock date.",
+      "agents": {
+        "boss": "Read the ticket and desk date; asked Inventory, then Accounting, then Customer Service; resolved the ticket, listing approval requests #1 and #2.",
+        "inventory": "Found 0 CC-TEE-WHITE size S in stock; identified Bulldog Print Co (5 lead days) and its open $840 invoice 501, due 2026-08-28.",
+        "accounting": "Confirmed invoice 501 was 3 days overdue and checking had $3,400; queued payment request #1 ($840, invoice 501) and purchase order request #2 (1 x CC-TEE-WHITE S, $8).",
+        "customer_service": "Saved draft #1 to Tauhid Zaman: out of stock, restock being confirmed, tentative 2026-09-05. Not sent.",
+        "facilities": "Not used."
+      },
+      "human_approvals": [
+        {
+          "request_id": 1,
+          "kind": "payment",
+          "what": "Invoice 501, Bulldog Print Co",
+          "amount": 840.0,
+          "decision": "approved",
+          "payment_id": 1
+        },
+        {
+          "request_id": 2,
+          "kind": "purchase_order",
+          "what": "1 x CC-TEE-WHITE size S",
+          "amount": 8.0,
+          "decision": "approved",
+          "payment_id": 2
+        }
+      ],
+      "customer_draft_id": 1
+    },
+    {
+      "id": 102,
+      "type": "rent_notice",
+      "requester": "Elm City Properties",
+      "subject": "Rent due",
+      "final_status": "resolved",
+      "run_id": "a41472b4caf2",
+      "outcome": "Rent of $2,400 for the Chapel Street lease, due 2026-09-02 (2 days away, not overdue), was confirmed and queued; a human approved it, leaving $152 in checking.",
+      "agents": {
+        "boss": "Read the ticket and desk date; asked Facilities, then Accounting; resolved the ticket, listing approval request #3.",
+        "facilities": "Matched the notice to lease 1 (Elm City Properties, $2,400, due 2026-09-02), found it due in 2 days, saw $2,552 available, and recommended queuing the payment.",
+        "accounting": "Re-checked cash and the lease, then queued payment request #3 ($2,400 rent, lease 1), leaving $152 after it.",
+        "inventory": "Not used.",
+        "customer_service": "Not used."
+      },
+      "human_approvals": [
+        {
+          "request_id": 3,
+          "kind": "payment",
+          "what": "Rent for lease 1, Elm City Properties",
+          "amount": 2400.0,
+          "decision": "approved",
+          "payment_id": 3
+        }
+      ],
+      "customer_draft_id": null
+    },
+    {
+      "id": 103,
+      "type": "price_override",
+      "requester": "Yale AI Club",
+      "subject": "Bulk hoodie discount",
+      "final_status": "resolved",
+      "run_id": "d24273839db7",
+      "outcome": "8 of 20 hoodies were in stock. The $264 restock for the other 12 was refused by the cash guardrail ($152 available), so no money moved. The club got a draft offering 8 now or 20 after restock at a proposed $36.67 each, subject to confirmation.",
+      "agents": {
+        "boss": "Read the ticket and desk date; asked Inventory, then Accounting, then Customer Service; resolved the ticket with no pending approvals.",
+        "inventory": "Found 8 CC-HOOD-NAVY size M in stock (12 short); Bulldog Print Co can restock in 5 days with no open invoices, so the earliest restock is 2026-09-05. It answered a second, two-level request from Accounting confirming the same.",
+        "accounting": "Found $152 in checking; asked Inventory to re-confirm the vendor; its $264 purchase order (12 x $22) was refused for lack of cash; set $36.67 as the lowest price that keeps a 40% margin.",
+        "customer_service": "Saved draft #2 to Yale AI Club: 8 available now, 12 expected by 2026-09-05, proposed $36.67 per hoodie still being confirmed. Not sent.",
+        "facilities": "Not used."
+      },
+      "human_approvals": [],
+      "refused_by_guardrail": [
+        {
+          "tool": "prepare_purchase_order",
+          "what": "12 x CC-HOOD-NAVY size M",
+          "amount": 264.0,
+          "reason": "Not enough cash: $152 available after pending approvals"
+        }
+      ],
+      "customer_draft_id": 2
+    }
+  ]
+}

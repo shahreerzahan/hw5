@@ -44,12 +44,39 @@
   .not-needed { color: var(--muted); }
   .empty { border: 2px dashed var(--line); border-radius: 8px; padding: 14px 16px; color: var(--muted); min-height: 46px; }
   .coming { text-align: center; padding: 70px 20px; color: var(--muted); background: var(--card); border: 2px dashed var(--line); border-radius: 10px; font-size: 17px; }
+  .first-call.actual { background: #fdf6e3; border-left-color: #b7791f; }
+  .match { display: inline-block; font-size: 12px; font-weight: 700; padding: 1px 8px; border-radius: 4px; margin-left: 6px; vertical-align: 1px; }
+  .match.same { background: var(--green-soft); color: var(--green); }
+  .match.diff { background: var(--amber-soft); color: var(--amber); }
+  ol.flow ol.sub { list-style: none; padding: 6px 0 0 18px; margin: 6px 0 0; border-left: 2px solid var(--line); }
+  ol.flow ol.sub li { padding: 4px 0; border: 0; }
+  ol.flow ol.sub li::before { display: none; }
+  .tools code.extra { background: var(--blue-soft); color: var(--blue); }
+  .tools code.refused { background: #fdecea; color: #a12a1b; text-decoration: line-through; }
+  .key { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  .key code { font-size: 12px; padding: 1px 6px; border-radius: 4px; }
+  .outcome { background: var(--green-soft); border-left: 4px solid var(--green); padding: 10px 14px; border-radius: 6px; }
+  .compare { margin: 0; padding-left: 20px; }
+  .compare li { margin: 4px 0; }
+  .runmeta { font-size: 13px; color: var(--muted); margin: -4px 0 6px; }
+  table.ledger { width: 100%; border-collapse: collapse; font-variant-numeric: tabular-nums; }
+  table.ledger th, table.ledger td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  table.ledger th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  table.ledger td.num, table.ledger th.num { text-align: right; white-space: nowrap; }
+  table.ledger tr.start td, table.ledger tr.end td { font-weight: 700; background: var(--blue-soft); }
+  table.ledger tr.zero td { color: var(--muted); }
+  .neg { color: #a12a1b; }
+  .bignum { font-size: 44px; font-weight: 800; letter-spacing: -1px; color: var(--blue); line-height: 1; }
+  .cash-head { display: flex; gap: 40px; align-items: flex-end; flex-wrap: wrap; }
+  .cash-head div span { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; color: var(--muted); margin-bottom: 6px; }
+  .check { background: var(--green-soft); border-radius: 8px; padding: 12px 16px; font-size: 14px; }
+  .check code { background: #fff; padding: 1px 6px; border-radius: 4px; }
 </style>
 </head>
 <body>
 <header>
   <h1>Campus Customs: Desk Tickets</h1>
-  <p>Shop date (desk.date_today): 2026-08-31 · Three open tickets · Plan written before running the agents</p>
+  <p>Shop date (desk.date_today): 2026-08-31 · Three open tickets · Plan written before running the agents; Actual and Cash filled from the post-reset runs</p>
 </header>
 
 <nav role="tablist">
@@ -97,10 +124,36 @@
 
   <section class="block">
     <h3><span class="tag actual">Actual</span> After running the agents</h3>
-    <h4>Boss called first</h4><div class="empty"></div>
-    <h4>Delegations</h4><div class="empty"></div>
-    <h4>MCP tools used</h4><div class="empty"></div>
-    <h4>Outcome</h4><div class="empty"></div>
+    <p class="runmeta">Run <code>131aba06f7e2</code> · 2026-10-10 23:49:49–23:49:57 UTC · 35 audit entries · after a reset, checking at $3,400</p>
+    <h4>Boss called first <span class="match same">matches plan</span></h4>
+    <div class="first-call actual"><strong>Inventory</strong>. The Boss read the ticket (<code>get_ticket</code>) and the desk date (<code>get_desk_date</code>), then sent the stock question to Inventory first.</div>
+
+    <h4>Delegations</h4>
+    <ol class="flow">
+      <li><span class="hand">Boss → Inventory</span>: Inventory found <strong>0</strong> CC-TEE-WHITE size S in stock. It looked up vendors (Bulldog Print Co, apparel reprint, 5 lead days) and saw invoice 501 ($840, due 2026-08-28) still open, which blocks shipping. Inventory reported back <em>without</em> calling Accounting itself.</li>
+      <li><span class="hand">Boss → Accounting</span> <span class="match diff">plan had Inventory → Accounting</span>: Accounting found invoice 501 three days overdue and checking at $3,400 with $0 pending. It queued <strong>$840</strong> for invoice 501 (request #1) and a purchase order for <strong>1 × CC-TEE-WHITE S = $8</strong> (request #2), both waiting for human approval.</li>
+      <li><span class="hand">Boss → Customer Service</span> <span class="match same">matches plan</span>: saved <strong>draft #1</strong> to Tauhid Zaman. It says size S is out of stock and the restock is being confirmed, with a <em>tentative</em> date of 2026-09-05 (today + 5 lead days) that isn't promised. Not sent.</li>
+      <li><span class="hand">Boss decides</span>: resolved the ticket with <code>resolve_ticket</code>, listing approval requests #1 and #2 for a human.</li>
+    </ol>
+    <p class="not-needed"><strong>Not used:</strong> Facilities <span class="match same">matches plan</span></p>
+
+    <h4>MCP tools used</h4>
+    <div class="tools">
+      <code>get_ticket</code><code>check_stock</code><code>get_vendor_invoices</code><code>get_cash_balance</code><code>prepare_payment</code><code>prepare_purchase_order</code><code>save_customer_draft</code><code>resolve_ticket</code><code class="extra">get_desk_date</code><code class="extra">list_vendors</code><code class="extra">get_invoice</code><code class="extra">ask_agent ×3</code>
+    </div>
+    <p class="key"><code style="background:var(--green-soft);color:var(--green)">expected</code> in my plan · <code class="extra" style="background:var(--blue-soft);color:var(--blue)">extra</code> used but not planned · <code style="background:#fdecea;color:#a12a1b;text-decoration:line-through">refused</code> blocked by a guardrail</p>
+
+    <h4>Outcome</h4>
+    <div class="outcome"><strong>Resolved.</strong> A human approved request #1 ($840, invoice 501) and request #2 ($8 purchase order): checking went $3,400 → $2,552. Customer draft #1 is saved and was not sent.</div>
+
+    <h4>Expected vs actual</h4>
+    <ul class="compare">
+      <li>The Boss's first call and the agents used matched my plan exactly (Inventory, Accounting, Customer Service; no Facilities).</li>
+      <li>The difference is the shape of the handoffs: the Boss ran every handoff itself, and Inventory never asked Accounting directly.</li>
+      <li>All 8 tools I expected were used, plus 3 lookups I didn't plan (<code>get_desk_date</code>, <code>list_vendors</code>, <code>get_invoice</code>).</li>
+      <li>Worth noting: invoice 501 is itself a "Rush reprint CC-TEE-WHITE S", so the extra $8 purchase order may order the same tee twice.</li>
+      <li>This run took only about 8 seconds and produced word-for-word the same steps as an earlier run of ticket 101 at 23:42, before the reset. That suggests Portkey returned cached model responses for identical requests.</li>
+    </ul>
   </section>
 </div>
 
@@ -138,10 +191,33 @@
 
   <section class="block">
     <h3><span class="tag actual">Actual</span> After running the agents</h3>
-    <h4>Boss called first</h4><div class="empty"></div>
-    <h4>Delegations</h4><div class="empty"></div>
-    <h4>MCP tools used</h4><div class="empty"></div>
-    <h4>Outcome</h4><div class="empty"></div>
+    <p class="runmeta">Run <code>a41472b4caf2</code> · 2026-10-10 23:51:33–23:52:04 UTC · 25 audit entries · checking at $2,552 after the ticket 101 approvals</p>
+    <h4>Boss called first <span class="match same">matches plan</span></h4>
+    <div class="first-call actual"><strong>Facilities</strong>. After <code>get_ticket</code> and <code>get_desk_date</code>, the Boss asked Facilities to confirm the lease, because rent is a lease issue.</div>
+
+    <h4>Delegations</h4>
+    <ol class="flow">
+      <li><span class="hand">Boss → Facilities</span>: Facilities read lease 1 (Elm City Properties, <strong>$2,400</strong>, due <strong>2026-09-02</strong>) and compared it with desk.date_today 2026-08-31. The rent is due in 2 days, so it isn't overdue. Checking showed $2,552, enough to cover it with $152 left. Facilities recommended that Accounting queue the payment, but didn't ask Accounting itself.</li>
+      <li><span class="hand">Boss → Accounting</span> <span class="match diff">plan had Facilities → Accounting</span>: Accounting re-checked cash ($2,552, $0 pending) and the lease, then queued <strong>$2,400</strong> rent for lease 1 (request #3) for human approval. $152 would be left after it.</li>
+      <li><span class="hand">Boss decides</span>: resolved the ticket, listing request #3 for a human.</li>
+    </ol>
+    <p class="not-needed"><strong>Not used:</strong> Inventory and Customer Service <span class="match same">matches plan</span></p>
+
+    <h4>MCP tools used</h4>
+    <div class="tools">
+      <code>get_ticket</code><code>get_desk_date</code><code>get_lease</code><code>get_cash_balance</code><code>prepare_payment</code><code>resolve_ticket</code><code class="extra">ask_agent ×2</code>
+    </div>
+    <p class="key"><code style="background:var(--green-soft);color:var(--green)">expected</code> in my plan · <code class="extra" style="background:var(--blue-soft);color:var(--blue)">extra</code> used but not planned · <code style="background:#fdecea;color:#a12a1b;text-decoration:line-through">refused</code> blocked by a guardrail</p>
+
+    <h4>Outcome</h4>
+    <div class="outcome"><strong>Resolved.</strong> A human approved request #3 ($2,400 rent to Elm City Properties): checking went $2,552 → $152, and the lease's next due date moved to 2026-10-02. Nothing was sent to the landlord.</div>
+
+    <h4>Expected vs actual</h4>
+    <ul class="compare">
+      <li>The closest match to my plan. Same first call, same two specialists, and exactly the six tools I listed, with nothing extra.</li>
+      <li>The only difference: the Boss, not Facilities, handed the payment to Accounting.</li>
+      <li>The overdue check came out as I expected: due 09-02 vs. today 08-31, so it's due in 2 days and not overdue.</li>
+    </ul>
   </section>
 </div>
 
@@ -180,16 +256,76 @@
 
   <section class="block">
     <h3><span class="tag actual">Actual</span> After running the agents</h3>
-    <h4>Boss called first</h4><div class="empty"></div>
-    <h4>Delegations</h4><div class="empty"></div>
-    <h4>MCP tools used</h4><div class="empty"></div>
-    <h4>Outcome</h4><div class="empty"></div>
+    <p class="runmeta">Run <code>d24273839db7</code> · 2026-10-10 23:52:22–23:53:39 UTC · 44 audit entries · checking at $152 after the ticket 101 and 102 approvals</p>
+    <h4>Boss called first <span class="match same">matches plan</span></h4>
+    <div class="first-call actual"><strong>Inventory</strong>. After <code>get_ticket</code> and <code>get_desk_date</code>, the Boss checked stock before talking price, since we can't promise a price without knowing we can fill the order.</div>
+
+    <h4>Delegations</h4>
+    <ol class="flow">
+      <li><span class="hand">Boss → Inventory</span>: <strong>8</strong> CC-HOOD-NAVY size M in stock ($22 cost, $58 list), so we're <strong>12 short</strong>. Bulldog Print Co can restock in 5 days and now has no open invoices (501 was paid), so the earliest restock is 2026-09-05.</li>
+      <li><span class="hand">Boss → Accounting</span> <span class="match same">matches plan (Boss route)</span>: Accounting found checking at <strong>$152</strong> with $0 pending.
+        <ol class="sub">
+          <li><span class="hand">Accounting → Inventory</span> <span class="match diff">not in plan</span>: re-confirmed the vendor and lead time for the 12-unit shortfall (two levels deep).</li>
+        </ol>
+        It then tried a purchase order for 12 × $22 = <strong>$264</strong>, which was <strong>refused: not enough cash</strong>. It set the lowest price that keeps a 40% margin at <strong>$36.67</strong> per hoodie ($14.67 margin on $22 cost).</li>
+      <li><span class="hand">Boss decides</span>: offer 8 now, or all 20 after the restock, at $36.67 each, subject to confirmation.</li>
+      <li><span class="hand">Boss → Customer Service</span> <span class="match same">matches plan</span>: saved <strong>draft #2</strong> to Yale AI Club: 8 available now, 12 expected by 2026-09-05, and a proposed $36.67 per hoodie "still being confirmed". Not sent.</li>
+    </ol>
+    <p class="not-needed"><strong>Not used:</strong> Facilities <span class="match same">matches plan</span></p>
+
+    <h4>MCP tools used</h4>
+    <div class="tools">
+      <code>get_ticket</code><code>check_stock</code><code>get_vendor_invoices</code><code>get_cash_balance</code><code class="refused">prepare_purchase_order</code><code>save_customer_draft</code><code>resolve_ticket</code><code class="extra">get_desk_date</code><code class="extra">list_vendors</code><code class="extra">ask_agent ×4</code>
+    </div>
+    <p class="key"><code style="background:var(--green-soft);color:var(--green)">expected</code> in my plan · <code class="extra" style="background:var(--blue-soft);color:var(--blue)">extra</code> used but not planned · <code style="background:#fdecea;color:#a12a1b;text-decoration:line-through">refused</code> blocked by a guardrail</p>
+
+    <h4>Outcome</h4>
+    <div class="outcome"><strong>Resolved, with no money moved.</strong> The $264 restock was blocked by the cash guardrail, so no approval request was created, and checking stayed at $152. Customer draft #2 is saved and was not sent.</div>
+
+    <h4>Expected vs actual</h4>
+    <ul class="compare">
+      <li>The first call, the agents used and the final reply matched my plan. My "may be tight after rent and the invoice" turned out right: only $152 was left, so the $264 order was refused.</li>
+      <li>The difference: Accounting asked Inventory again (a two-level handoff), repeating a lookup Inventory had already done for the Boss.</li>
+      <li>Worth noting: the draft says the other 12 are "expected by September 5" even though the restock order couldn't be placed. And $36.67 is the <em>lowest</em> acceptable price (37% off list), offered as the proposed price rather than as a floor to negotiate from.</li>
+    </ul>
   </section>
 </div>
 
 <!-- ============================== CASH / REFLECTION ============================== -->
 <div class="panel" id="cash" role="tabpanel">
-  <div class="coming">Cash: coming later.</div>
+  <div class="summary">
+    <h2>Cash: checking account</h2>
+    <div class="cash-head">
+      <div><span>Start (after reset)</span><div class="bignum">$3,400</div></div>
+      <div><span>Paid out</span><div class="bignum neg">−$3,248</div></div>
+      <div><span>End</span><div class="bignum">$152</div></div>
+    </div>
+  </div>
+
+  <section class="block">
+    <h3>How cash changed, ticket by ticket</h3>
+    <p class="runmeta">Agents only <em>queue</em> payments; cash moved only when a human clicked Approve on the board. The approvals happened in this order, before the next ticket ran.</p>
+    <table class="ledger">
+      <thead><tr><th>Ticket</th><th>What moved the cash</th><th>Why</th><th class="num">Amount</th><th class="num">Balance</th></tr></thead>
+      <tbody>
+        <tr class="start"><td>—</td><td>Starting balance after reset</td><td><code>cash_accounts.checking</code></td><td class="num"></td><td class="num">$3,400.00</td></tr>
+        <tr><td>101</td><td>Payment #1: invoice 501 to Bulldog Print Co (approval request #1)</td><td>The overdue $840 rush-reprint invoice was blocking Bulldog from shipping the size S tee.</td><td class="num neg">−$840.00</td><td class="num">$2,560.00</td></tr>
+        <tr><td>101</td><td>Payment #2: purchase order, 1 × CC-TEE-WHITE size S (approval request #2)</td><td>Restock the one tee the customer ordered, priced at unit cost $8.</td><td class="num neg">−$8.00</td><td class="num">$2,552.00</td></tr>
+        <tr><td>102</td><td>Payment #3: rent for lease 1 to Elm City Properties (approval request #3)</td><td>September rent, due 2026-09-02, two days after desk.date_today.</td><td class="num neg">−$2,400.00</td><td class="num">$152.00</td></tr>
+        <tr class="zero"><td>103</td><td>No payment. Purchase order for 12 × CC-HOOD-NAVY M ($264) was <strong>refused</strong></td><td>$264 is more than the $152 available, so <code>prepare_purchase_order</code> refused it before any approval was created.</td><td class="num">$0.00</td><td class="num">$152.00</td></tr>
+        <tr class="end"><td>—</td><td>Ending balance</td><td></td><td class="num">−$3,248.00</td><td class="num">$152.00</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section class="block">
+    <h3>Checked against the database</h3>
+    <div class="check">
+      <p style="margin:0 0 8px"><strong>✓ The ending balance matches.</strong> <code>SELECT balance FROM cash_accounts WHERE name='checking'</code> → <strong>152.0</strong> in <code>data/campus_customs_new.db</code>.</p>
+      <p style="margin:0 0 8px"><strong>✓ The payments table adds up.</strong> Payments 1–3 ($840 invoice 501, $8 purchase order, $2,400 rent), all approved by <code>desk</code> with paid_at 2026-08-31, sum to $3,248, and $3,400 − $3,248 = $152.</p>
+      <p style="margin:0"><strong>✓ Side effects are consistent.</strong> Invoice 501 status is <code>paid</code>, lease 1's next_due moved to <code>2026-10-02</code>, approval requests #1–3 are <code>approved</code>, and none are still pending.</p>
+    </div>
+  </section>
 </div>
 
 <div class="panel" id="reflection" role="tabpanel">
