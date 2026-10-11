@@ -188,11 +188,11 @@ The new MCP tools were written to server.py, but the vibe coder's MCP connection
 
 ### Follow-up prompt
 
-> _To be added (if needed)._
+> _None._
 
 ### What was lacking after the first prompt
 
-_To be added (one sentence)._
+_Nothing; the first prompt was sufficient._
 
 ## Problem 7: Backend routes
 
@@ -217,11 +217,11 @@ _To be added (one sentence)._
 
 ### Follow-up prompt
 
-> _To be added (if needed)._
+> _None._
 
 ### What was lacking after the first prompt
 
-_To be added (one sentence)._
+_Nothing; the first prompt was sufficient._
 
 ## Problem 8: Agent dashboard
 
@@ -257,11 +257,11 @@ _To be added (one sentence)._
 
 ### Follow-up prompt
 
-> _To be added (if needed)._
+> _None._
 
 ### What was lacking after the first prompt
 
-_To be added (one sentence)._
+_Nothing; the first prompt was sufficient._
 
 ## Problem 9: Resolve the tickets
 
@@ -285,11 +285,11 @@ _To be added (one sentence)._
 
 ### Follow-up prompt
 
-> _To be added (if needed)._
+> _None._
 
 ### What was lacking after the first prompt
 
-_To be added (one sentence)._
+_Nothing; the first prompt was sufficient._
 
 ## Problem 10: Reflection
 
@@ -330,12 +330,26 @@ The first reflection didn't question Inventory's vendor choice or credit the ten
 
 ### Prompt
 
-> _To be added._
+> Problem 11:
+>
+> Get the project ready to submit as a public GitHub repo.
+>
+> 1. Make sure the folder matches the expected layout as the attached ss
+>
+> 2. Include both database files in data/ so graders can run the app. Do NOT push my real .env.
+>
+> 3. Write README.md explaining: how to copy the original database to the working copy for a clean run, how to start the MCP server, how to start the FastAPI backend, how to start the React board, and to reset the database before a full three-ticket run.
+>
+> 4. Create output/github_url.txt containing: https://github.com/shahreerzahan/hw5
+>
+> 5. Search the whole project and make sure gpt-6-luna is the only model name used anywhere.
+>
+> 6. Commit and push, then show me git status and confirm .env is not in the repo.
 
 ### Follow-up prompt
 
-> _To be added (if needed)._
+> _None._
 
 ### What was lacking after the first prompt
 
-_To be added (one sentence)._
+_Nothing; the first prompt was sufficient._

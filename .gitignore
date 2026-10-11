@@ -10,3 +10,8 @@ node_modules/
 
 # macOS
 .DS_Store
+
+# Local-only files (not part of the submission)
+data.zip
+.claude/
+*.json.tmp
